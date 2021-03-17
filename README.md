@@ -1,5 +1,8 @@
 # MyPipe
 
+Requirements:
+Python3 with PyMySQL and Django preinstalled in either venv or on system
+
 Overview of the project:
 
 1. All the connections of for the database should be made in MyPipe/models.py. There to connect to the database and to make querries
