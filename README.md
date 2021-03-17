@@ -13,3 +13,5 @@ Tutorial for views: https://docs.djangoproject.com/en/3.1/intro/tutorial03/
 4. HTML templates should be added in templates folder
 Documentation for templates https://docs.djangoproject.com/en/3.1/topics/templates/
 5. Static files(CSS, JavaScript) is in static folder
+6. HTML and CSS is based on Materialise stylesheet + js, to make our life simplier and do not have troubles with bootstrap
+https://materializecss.com/
