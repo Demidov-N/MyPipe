@@ -19,5 +19,5 @@ from myPipe import views
 
 urlpatterns = [
     #    path('admin/', admin.site.urls),
-    path('login', )
+    path('', views.login),
 ]

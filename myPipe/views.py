@@ -1,12 +1,11 @@
 from django.shortcuts import render
 
-import models as md
 # Create your views here.
 
 username = ''
 def login(request):
     """The main login page, the first page people see"""
-    return render(request, 'login.html')
+    return render(request, 'base.html')
 
 def username_safe(request):
     """Saves a username for the following usage, redirects to the main page"""
