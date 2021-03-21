@@ -1,0 +1,40 @@
+.navatar {
+  .brand-logo {
+    position: static;
+    margin-right: 12px;
+  }
+
+  #avatar {
+    height: inherit;
+
+    > li,
+    a {
+      height: inherit;
+
+      img {
+        height: 100%;
+        padding: 8px;
+      }
+    }
+  }
+}
+
+.nav-wrapper form{
+    margin: auto;
+    width: 50%;
+}
+
+.nav-wrapper .input-field{
+    padding-top: 7px;
+}
+
+.nav-wrapper form #search{
+    height: 50px;
+}
+
+nav .right{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
+
