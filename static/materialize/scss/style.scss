@@ -1,20 +1,21 @@
 .navatar {
   .brand-logo {
     position: static;
-    margin-right: 12px;
   }
 
   #avatar {
     height: inherit;
-
+    padding-right: 10px;
     > li,
     a {
       height: inherit;
-
       img {
+        vertical-align: middle;
         height: 100%;
         padding: 8px;
       }
+
+
     }
   }
 }

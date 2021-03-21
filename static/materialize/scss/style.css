@@ -1,13 +1,14 @@
 .navatar .brand-logo {
-  position: static;
-  margin-right: 12px; }
+  position: static; }
 .navatar #avatar {
-  height: inherit; }
+  height: inherit;
+  padding-right: 10px; }
   .navatar #avatar > li,
   .navatar #avatar a {
     height: inherit; }
     .navatar #avatar > li img,
     .navatar #avatar a img {
+      vertical-align: middle;
       height: 100%;
       padding: 8px; }
 
