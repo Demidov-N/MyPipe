@@ -2,7 +2,9 @@ from django.shortcuts import render
 
 # Create your views here.
 
-username = ''
+username = ""
+
+
 def login(request):
     """The main login page, the first page people see"""
     return render(request, 'base.html')

@@ -10,7 +10,7 @@
 [Ll]ocal
 [Ss]cripts
 pyvenv.cfg
-.venv
+venv
 pip-selfcheck.json
 
 ### JetBrains template
@@ -195,7 +195,7 @@ celerybeat.pid
 
 # Environments
 .env
-.venv
+venv
 env/
 venv/
 ENV/
