@@ -6,14 +6,13 @@ import pymysql as sql
 # TODO: connect MySQL and create a cursor
 
 
-def create_account():
-    """Creates an account"""
+def create_account(info: dict):
+    """Creates an account if possible. If not possible return false"""
     pass
 
 
-def create_channel(login):
-    """Creates a channel with the given login name"""
-
+def create_channel(info: dict):
+    """Creates a channel with the given login name. If not possible return false"""
 
 class Accounts:
     """TODO: Finish the whole class"""
@@ -53,6 +52,7 @@ class Accounts:
         """Deletes account and all its channel
         TODO: Deletion CASCADE of EVERYTHING"""
 
+
 class Channel:
     """TODO: Finish the whole class"""
     name = ""
@@ -82,6 +82,7 @@ class Channel:
         """Deletes channel with ALL ITS VIDEOS"""
         pass
 
+
 class Video:
     id = ""
     channel = ""
@@ -106,3 +107,4 @@ class Video:
 
     def delete_video(self):
         """Deletes a video and ALL ITS COMMENTS"""
+        pass
