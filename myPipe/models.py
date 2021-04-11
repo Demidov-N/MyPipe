@@ -6,13 +6,7 @@ import pymysql as sql
 # TODO: connect MySQL and create a cursor
 
 
-def create_account(info: dict):
-    """Creates an account if possible. If not possible return false"""
-    pass
 
-
-def create_channel(info: dict):
-    """Creates a channel with the given login name. If not possible return false"""
 
 class Accounts:
     """TODO: Finish the whole class"""
@@ -23,16 +17,20 @@ class Accounts:
         """Initialized by the user login, can find all the info from that"""
         self.login = login
 
-    def login(self, login: str)  -> dict:
-        """Gets an account info by its login"""
-        pass
+    def login(self, login: str) -> dict:
+        #TODO Should check the fact that the account exist and there is an account at all
+        if login == "RedBear":
+            self.login = login
+            return True
+        else:
+            return False
 
     def info(self):
         """Gets info about an account
         TODO: Just a SQL statement getting by user login"""
         pass
 
-    def channels(self, login: str) -> dict:
+    def channels(self) -> list:
         """Get accounts channel by its name, returns a list of channels
         TODO: define is it a list of channel objects or the list of channel names, or a dictionary"""
         pass
@@ -108,3 +106,18 @@ class Video:
     def delete_video(self):
         """Deletes a video and ALL ITS COMMENTS"""
         pass
+
+def create_account(info: dict):
+    """Creates an account if possible. If not possible return false"""
+    pass
+
+
+def create_channel(info: dict):
+    """Creates a channel with the given login name. If not possible return false"""
+
+
+Account = Accounts("")
+
+
+
+

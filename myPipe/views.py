@@ -1,10 +1,11 @@
 from django.shortcuts import render
-
+from django.template import RequestContext
+from myPipe.context_processors import *
 # Create your views here.
 
 
 def login(request):
-    """The main login page, the first page people see"""
+
     return render(request, 'base.html')
 
 def username_safe(request):
@@ -23,6 +24,8 @@ def account_safe(request):
 
 def main_page(request):
     """The main page of a project"""
+    context = RequestContext(request, [account_data])
+    return render(request, 'main_page.html')
 
 
 def search_video(request):

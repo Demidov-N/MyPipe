@@ -23,7 +23,7 @@
           <li>
               <a href="#" data-target="slide-out" class="sidenav-trigger show-on-large"><i class="material-icons">menu</i>
               </a></li>
-          <li><a href="#" class="brand-logo left"> MyPipe</a></li>
+          <li><a href="#" class="brand-logo left">MyPipe</a></li>
       </ul>
           <form id = "search" action="" method="post">
               {% csrf_token %}
@@ -35,8 +35,8 @@
           </form>
     <ul id="avatar" class="right">
         <li><a class="dropdown-trigger" data-target='dropdown1'>
-            <span>redbear</span>
-            <img class="circle" src="static/user_data/avatar/redbear.png"></a>
+            <span>{{ account.username }}</span>
+            <img class="circle" src="static/user_data/avatar/{{ account.avatar }}"></a>
         </li>
      </ul>
   </div>
@@ -66,10 +66,15 @@
             <a class="collapsible-header">My Channels<i class="material-icons">arrow_drop_down</i></a>
             <div class="collapsible-body">
               <ul>
+                  {% for channel in channels %}
+                      <li>
+                          <a gref="#!">
+                              <img class="circle" height="100%" align="middle" src="static/user_data/channel_avatar/{{ channel.avatar }}">
+                              <span> {{ channel.name }}</span>
+                          </a>
+                      </li>
+                  {% endfor %}
                 <li><a href="#!">First</a></li>
-                <li><a href="#!">Second</a></li>
-                <li><a href="#!">Third</a></li>
-                <li><a href="#!">Fourth</a></li>
               </ul>
             </div>
           </li>
@@ -93,7 +98,6 @@
 
 
     {% block content %}
-
    {% endblock content %}
 </div>
 
