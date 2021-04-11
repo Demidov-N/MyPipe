@@ -11,16 +11,16 @@ import pymysql as sql
 class Accounts:
     """TODO: Finish the whole class"""
     """Account object, represents a user"""
-    login = ""
+    user = ""
 
-    def __init__(self, login: str):
+    def __init__(self, user='none'):
         """Initialized by the user login, can find all the info from that"""
-        self.login = login
+        self.user = user
 
-    def login(self, login: str) -> dict:
+    def login(self, login: str, password: str):
         #TODO Should check the fact that the account exist and there is an account at all
-        if login == "RedBear":
-            self.login = login
+        if login == "RedBear" and password == '1234':
+            self.user = login
             return True
         else:
             return False
@@ -28,7 +28,6 @@ class Accounts:
     def info(self):
         """Gets info about an account
         TODO: Just a SQL statement getting by user login"""
-        pass
 
     def channels(self) -> list:
         """Get accounts channel by its name, returns a list of channels
@@ -116,7 +115,6 @@ def create_channel(info: dict):
     """Creates a channel with the given login name. If not possible return false"""
 
 
-Account = Accounts("")
 
 
 

@@ -20,5 +20,8 @@ from myPipe import views
 urlpatterns = [
     #    path('admin/', admin.site.urls),
     path('', views.login),
-    path('', views.main_page),
+    path('main', views.main_page),
+    path('log_ver', views.username_save, name='log_ver'),
+    path('register', views.create_account, name='create_acc'),
+    path('save_ver', views.account_safe, name='save_ver')
 ]

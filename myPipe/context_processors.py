@@ -1,8 +1,8 @@
-from myPipe.models import Account
+from myPipe.models import Accounts
 def account_data(request):
-    account = Account.info()
-    channels = Account.channels()
-
+    ses_acc = request.session.get('account', Accounts('none'))
+    account = ses_acc.info()
+    channels = ses_acc.channels()
     #TODO Change this to the normal call of the model, now just on one account
     account = {
         'username': 'RedBear',

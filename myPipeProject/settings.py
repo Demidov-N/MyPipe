@@ -25,7 +25,9 @@ SECRET_KEY = '09364w(25&yr^$azchi1^gorv2ec#oqi)y^63^)l)zx-^ktwe6'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '*'
+]
 
 
 # Application definition
@@ -50,6 +52,11 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'myPipeProject.urls'
+
+SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
+
+SESSION_SERIALIZER = "django.contrib.sessions.serializers.PickleSerializer"
+
 
 TEMPLATES = [
     {

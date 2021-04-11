@@ -1,22 +1,34 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponseRedirect, Http404
 from django.template import RequestContext
+from myPipe.models import Accounts
 from myPipe.context_processors import *
+
 # Create your views here.
 
-
 def login(request):
+    return render(request, 'login.html')
 
-    return render(request, 'base.html')
-
-def username_safe(request):
+def username_save(request):
+    post = request.POST
+    account = Accounts()
+    print(type(account))
+    if account.login(post['login'], post['password']):
+        request.session['account'] = account
+        return HttpResponseRedirect('main')
+    else:
+        return render(request, 'login.html', {"failed": True})
     """Saves a username for the following usage, redirects to the main page"""
+
+
 
 def create_account(request):
     """Create account page, creates new account"""
-    return render(request,  'create_channel.html')
+    return render(request,  'register.html')
 
 def account_safe(request):
+
     """Saves the account in the database, redirects on the main page"""
+
 
 
 
@@ -24,7 +36,6 @@ def account_safe(request):
 
 def main_page(request):
     """The main page of a project"""
-    context = RequestContext(request, [account_data])
     return render(request, 'main_page.html')
 
 
