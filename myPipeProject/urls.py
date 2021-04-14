@@ -19,9 +19,12 @@ from myPipe import views
 
 urlpatterns = [
     #    path('admin/', admin.site.urls),
-    path('', views.login),
-    path('main', views.main_page),
+    path('', views.login, name='login'),
+    path('main', views.main_page, name='main'),
     path('log_ver', views.username_save, name='log_ver'),
     path('register', views.create_account, name='create_acc'),
-    path('save_ver', views.account_safe, name='save_ver')
+    path('save_ver', views.account_safe, name='save_ver'),
+    path('account/<str:username>', views.account_info, name='account'),
+    path('my_channels', views.channel_views, name='my_channels'),
+    path('create_video/<str:channel>/', views.video_create, name='create_video')
 ]

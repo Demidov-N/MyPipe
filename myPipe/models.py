@@ -26,17 +26,59 @@ class Accounts:
             return False
 
     def info(self):
-        """Gets info about an account
-        TODO: Just a SQL statement getting by user login"""
+        """TODO: Just a SQL statement getting by user login"""
+        return {
+            'username': 'RedBear',
+            'email': 'redbear@none.com',
+            'avatar': 'redbear.png'
+        }
+
 
     def channels(self) -> list:
         """Get accounts channel by its name, returns a list of channels
         TODO: define is it a list of channel objects or the list of channel names, or a dictionary"""
-        pass
+
+        return [
+            {
+                'name': "PIDARAS TV",
+                'subscribers': 2,
+                'videos': 0,
+                'owner': 'RedBear',
+                'avatar': 'empty.png',
+                'description': "a channel about a beauiful people we are surrounded with"
+            },
+            {
+                'name': "UEBOK TV",
+                'subscribers': 30,
+                'videos': 3,
+                'owner': 'RedBear',
+                'avatar': 'empty.png',
+                'description': "a channel about a beautifl person Danya"
+            }
+        ]
+
+    def subscriptions(self) -> list:
+        """Get the list of subscriptions"""
+        return [
+            {
+                'name': "PIDARAS TV",
+                'subscribers': 2,
+                'videos': 0,
+                'owner': 'RedBear',
+                'avatar': 'empty.png'
+            },
+            {
+                'name': "UEBOK TV",
+                'subscribers': 30,
+                'videos': 3,
+                'owner': 'RedBear',
+                'avatar': 'empty.png'
+            }
+        ]
 
     def change_info(self, new_info: dict):
-        """Changes an info of a person. Returns false if it is not available to change login on another one"""
         pass
+
 
     def subscribe(self, channel):
         """Subscribes on the specific channel"""
@@ -50,6 +92,7 @@ class Accounts:
         TODO: Deletion CASCADE of EVERYTHING"""
 
 
+
 class Channel:
     """TODO: Finish the whole class"""
     name = ""
@@ -59,8 +102,15 @@ class Channel:
         self.name = name
 
     def channel_info(self):
-        """Gets an info about the channel"""
-        pass
+        return {
+                'name': "PIDARAS TV",
+                'subscribers': 2,
+                'videos': 0,
+                'owner': 'RedBear',
+                'avatar': 'empty.png',
+                'description': "a channel about a beauiful people we are surrounded with"
+            }
+
 
     def videos(self, num = 10, sort_by = "time", descending = False) -> dict:
         """
@@ -106,7 +156,7 @@ class Video:
         """Deletes a video and ALL ITS COMMENTS"""
         pass
 
-def create_account(info: dict):
+def create_user(info: dict):
     """Creates an account if possible. If not possible return false"""
     pass
 

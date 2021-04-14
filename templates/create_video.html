@@ -1,23 +1,19 @@
-{% load static %}
-
-<!DOCTYPE html>
-<html lang="en" style="display: table; margin: auto; height: 100%;">
-<head>
-    <meta charset="UTF-8">
-    <title>RedBear Store</title>
-
-    <!--Import Google Icon Font-->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <!--Import materialize.css-->
-    <link type="text/css" rel="stylesheet" href="static/materialize/css/materialize.css"  media="screen,projection"/>
-    <!--Let browser know website is optimized for mobile-->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link type="text/css" rel="stylesheet" href="static/materialize/scss/style.css"/>
-</head>
-<body style="display: table-cell; vertical-align: middle; height: 100%;">
-<h1 class="center blue-text">Welcome To MyPipe</h1>
-<div id="login-page" class="row" style="width: 500px">
-      <div class="row">
+{% extends 'base.html' %}
+{% load static%}
+{% block content %}
+    <div class="container">
+    <div class="col 12 center-align">
+    <div class="row" id="avatar">
+        <h3 class="center-align light-blue-text">Create video on channel
+            </h3>
+        <h3>
+            <img class="circle"  style="height: inherit; width: 100px; vertical-align: middle"
+                 src="{% static '/user_data/channel_avatar/'%}{{ channel.avatar }}">
+            {{ channel.name }}
+        </h3>
+    </div>
+    </div>
+    <div id="login-page" class="row" style="width: 500px">
     <form class="col s12" action="{% url "save_ver" %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {% if acc_exist %}
@@ -83,9 +79,5 @@
 
     </form>
   </div>
-  </div>
-<!--JavaScript at end of body for optimized loading-->
-<script type="text/javascript" src="{% static 'materialize/js/materialize.js' %}"></script>
-<script type="text/javascript" src="static/materialize/js/project.js"></script>
-</body>
-</html>
+  </div></div>
+{% endblock %}

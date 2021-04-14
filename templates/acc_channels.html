@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container">
+    <div class="col s12">
+            <div class="row"><h2 class="blue-text center-align">My Channels</h2></div>
+            <div class="row">
+                {% if acc_channels%}
+                    {% for channel in acc_channels %}
+                    <div class="col s4">
+                        <div class="card small">
+                        <div class="card-image">
+                            {% if channel.thumbnail == "empty" %}
+                                <img src="{% static "user_data/channel_avatar/" %}{{ channel.avatar }}">
+                            {% else %}
+                                <img src="{% static "channel_data/thumbnails/" %}{{ channel.name }}.png">
+                            {% endif %}
+
+                        </div>
+                        <div class="card-content">
+                            <span class="card-title"><a class="black-text">{{ channel.name }}</a></span>
+                            <p>Subscribers: {{ channel.subscribers }}</p>
+                            <p>Videos: {{ channel.videos }}</p>
+                        </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <a>There is no channels on this account</a>
+                {% endif %}
+            <div class="row">
+                <div class="col s4">
+                    <a href="#newChannel">
+                    <div class="card small">
+                        <div class="card-image">
+                            <img src="{% static "other/new_image.png" %}">
+
+                        </div>
+                        <div class="card-content">
+                            <span class="card-title black-text">Create cew channel</span>
+                        </div>
+                    </div>
+                    </a>
+                </div>
+            </div>
+            </div>
+            </div>
+    </div>
+{% endblock %}

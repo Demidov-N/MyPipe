@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container">
+    <div class="row black-text">
+        <div class="col s8">
+            <div class="row valign-wrapper blue lighten-2 z-depth-2 off">
+                <div class = "col s2">
+                    <img class="responsive-img circle" src="{% static "user_data/avatar/" %}{{ acc_now.avatar }}">
+                </div>
+                <div class = "col s10">
+                    <div class="row no-pad" >
+                        <h5>{{ acc_now.username }}</h5>
+                    </div>
+                    <div class="row no-pad-top">
+                        <a class="text black-text">Email: {{ acc_now.email }}</a>
+                    </div>
+                    <div class="row no-pad-top">
+                        <a class="text black-text">Total views: {{ views }}</a>
+                    </div>
+                    <div class="row">
+                        <a class="text black-text">Total subscribers from all channels: {{ views }}</a>
+                    </div>
+                </div>
+                <div class="col s2">
+                    <div class="row">
+                        <a class="btn darken-4 blue">Subscribe</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col s12">
+            <div class="row"><h2 class="blue-text center-align">Channels</h2></div>
+            <div class="row">
+                {% if channels%}
+                    {% for channel in channels %}
+                    <div class="col s4">
+                        <div class="card small">
+                        <div class="card-image">
+                            {% if channel.thumbnail == "empty" %}
+                                <img src="{% static "user_data/channel_avatar/" %}{{ channel.avatar }}">
+                            {% else %}
+                                <img src="{% static "channel_data/thumbnails/" %}{{ channel.name }}.png">
+                            {% endif %}
+
+                        </div>
+                        <div class="card-content">
+                            <span class="card-title"><a class="black-text">{{ channel.name }}</a></span>
+                            <p>Subscribers: {{ channel.subscribers }}</p>
+                            <p>Videos: {{ channel.videos }}</p>
+                        </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <a>There is no channels on this channel</a>
+                {% endif %}
+            </div>
+            </div>
+        </div>
+        <div class="col s4" style="padding-left: 50px">
+        <div class="row">
+            <h5>Subscriptions</h5>
+        </div>
+            {% for channel in sub_channels %}
+                <div class="row">
+                    <div class = "col s2">
+                        <img class="responsive-img circle"
+                             src="{% static "user_data/avatar/" %}{{ channel.avatar }}">
+                    </div>
+                    <div class = "col s10">
+                        <div class="row no-pad" >
+                            <a class="black-text">{{ channel.name }}</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    </div>
+</section>
+{% endblock %}

@@ -4,15 +4,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>RedBear Store</title>
+    <title>MyPipe</title>
 
     <!--Import Google Icon Font-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!--Import materialize.css-->
-    <link type="text/css" rel="stylesheet" href="static/materialize/css/materialize.css"  media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="{% static 'materialize/css/materialize.css'%}"  media="screen,projection"/>
     <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link type="text/css" rel="stylesheet" href="static/materialize/scss/style.css"/>
+    <link type="text/css" rel="stylesheet" href="{% static "materialize/scss/style.css"%}"/>
+
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
 <body>
 
@@ -23,7 +25,7 @@
           <li>
               <a href="#" data-target="slide-out" class="sidenav-trigger show-on-large"><i class="material-icons">menu</i>
               </a></li>
-          <li><a href="#" class="brand-logo left">MyPipe</a></li>
+          <li><a href="{% url 'main' %}" class="brand-logo left">MyPipe</a></li>
       </ul>
           <form id = "search" action="" method="post">
               {% csrf_token %}
@@ -34,9 +36,9 @@
               </div>
           </form>
     <ul id="avatar" class="right">
-        <li><a class="dropdown-trigger" data-target='dropdown1'>
+        <li><a class="dropdown-trigger" data-target='dropdown1' href="{% url 'account' account.username %}">
             <span>{{ account.username }}</span>
-            <img class="circle" src="static/user_data/avatar/{{ account.avatar }}"></a>
+            <img class="circle" src="{% static '/user_data/avatar/'%}{{ account.avatar }}"></a>
         </li>
      </ul>
   </div>
@@ -44,9 +46,9 @@
 </div>
 <!-- Dropdown Structure -->
   <ul id='dropdown1' class='dropdown-content'>
-    <li><a href="#!">one</a></li>
-    <li><a href="#!">two</a></li>
-    <li><a href="#!">three</a></li>
+    <li><a href="{% url "my_channels" %}">My Channels</a></li>
+    <li><a href="#Settings">Settings</a></li>
+    <li><a href="{% url 'login' %}">Logout</a></li>
   </ul>
 
 
@@ -54,22 +56,24 @@
     <li><div class="user-view">
       <div class="background blue darken-4">
       </div>
-        <a href="#user"><img class="circle" src="static/user_data/avatar/redbear.png"></a>
+        <a href="#user"><img class="circle" src="{% static '/user_data/avatar/'%}{{ account.avatar }}"></a>
         <a href="#name"><span class="white-text name">redbear</span></a>
     </div></li>
-      <li><a href="#account">Account information</a> </li>
+      <li><a href="{% url "account" account.username %}">Account information</a> </li>
       <li><a href="#upoad">Upload a video</a></li>
       <li><a href="#history">History</a> </li>
+        <li><a href="{% url 'login' %}" class="red-text">Logout</a> </li>
       <li class="no-padding">
         <ul class="collapsible collapsible-accordion">
           <li>
             <a class="collapsible-header">My Channels<i class="material-icons">arrow_drop_down</i></a>
             <div class="collapsible-body">
               <ul>
-                  {% for channel in channels %}
+                  {% for channel in acc_channels %}
                       <li>
-                          <a gref="#!">
-                              <img class="circle" height="100%" align="middle" src="static/user_data/channel_avatar/{{ channel.avatar }}">
+                          <a href="#!">
+                              <img class="circle" height="100%" align="middle"
+                                   src="{% static '/user_data/avatar/'%}{{ channel.avatar }}">
                               <span> {{ channel.name }}</span>
                           </a>
                       </li>
@@ -82,10 +86,15 @@
                 <a class="collapsible-header">Subscribed Channels<i class="material-icons">arrow_drop_down</i></a>
             <div class="collapsible-body">
               <ul>
-                <li><a href="#!">First</a></li>
-                <li><a href="#!">Second</a></li>
-                <li><a href="#!">Third</a></li>
-                <li><a href="#!">Fourth</a></li>
+                {% for channel in subscribed %}
+                      <li>
+                          <a href="#!{{ channel.name }}">
+                              <img class="circle" height="100%" align="middle"
+                                   src="{% static '/user_data/avatar/'%}{{ channel.avatar }}">
+                              <span> {{ channel.name }}</span>
+                          </a>
+                      </li>
+                  {% endfor %}
               </ul>
             </div>
             </li>
@@ -94,16 +103,12 @@
   </ul>
 
 
-<div class = "container">
+ {% block content %}
 
-
-    {% block content %}
    {% endblock content %}
-</div>
-
 
 <!--JavaScript at end of body for optimized loading-->
-<script type="text/javascript" src="{% static 'materialize/js/materialize.js' %}"></script>
-<script type="text/javascript" src="static/materialize/js/project.js"></script>
+<script type="text/javascript" src="{% static "/materialize/js/materialize.js" %}"></script>
+<script type="text/javascript" src="{% static "materialize/js/project.js"%}"></script>
 </body>
 </html>

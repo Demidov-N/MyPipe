@@ -30,4 +30,7 @@ nav .right {
 #login-page {
   width: 500px; }
 
+.card.small .card-image {
+  object-fit: cover; }
+
 /*# sourceMappingURL=style.css.map */
