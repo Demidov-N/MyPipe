@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static%}
+{% load static %}
 {% block content %}
     <div class="container">
     <div class="col 12 center-align">
@@ -11,73 +11,90 @@
                  src="{% static '/user_data/channel_avatar/'%}{{ channel.avatar }}">
             {{ channel.name }}
         </h3>
+        <h5>Choose the way</h5>
     </div>
+
     </div>
+        <div class="col s12">
+        <ul class="tabs center-align" id="tabs">
+            <li class="tab col s6"><a href="#direct">Upload Directly</a></li>
+            <li class="tab col s6"><a href="#youtube">Upload with YouTube</a></li>
+            </ul></div>
+        <div id="direct">
+            <div class="row col s12 center-align">
+            <h5>Direct</h5>
+        </div>
     <div id="login-page" class="row" style="width: 500px">
-    <form class="col s12" action="{% url "save_ver" %}" method="post" enctype="multipart/form-data">
+    <form class="col s12" action="{% url "save_vid" "direct" channel.name %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {% if acc_exist %}
-            <div class="row">
-            <a class="red-text">Account with such name already exist. Try another one</a>
-            </div>
-        {% endif %}
     <div class="row">
         <div class="input-field col s12">
-          <input id="username" type="text" class="validate" name="username">
-          <label for="username">Create Username</label>
+          <input id="name" type="text" class="validate" name="name">
+          <label for="name">Name Your Video</label>
         </div>
       </div>
     <div class="row">
         <div class="file-field input-field col s12">
       <div class="btn light-blue">
-        <span>Avatar</span>
-          {{ form.file }}
+        <span>Video Upload</span>
+          {{ form.video }}
       </div>
       <div class="file-path-wrapper">
-        <input class="file-path" type="text"  placeholder="Upload your Avatar">
+        <input class="file-path" type="text"  placeholder="Path of Your Video">
       </div>
     </div>
     </div>
-        {% if pass_not_same %}
-            <div class="row">
-            <a class="red-text">Passwords do not match, try again</a>
-            </div>
-        {% endif %}
-      <div class="row">
-        <div class="input-field col s12">
-          <input id="password" type="password" class="validate" name="password">
-          <label for="password">Password</label>
+  <div class="row">
+    <div class="input-field col s12">
+          <textarea id="description" class="materialize-textarea" name="description"></textarea>
+          <label for="description">Description</label>
         </div>
-      </div>
-      <div class="row">
-        <div class="input-field col s12">
-          <input id="password_val" type="password" class="validate" name="password_val">
-          <label for="password_val">Repeat Password</label>
-        </div>
-      </div>
-      <div class="row">
-        <div class="input-field col s12">
-          <input id="email" type="email" class="validate" name="email">
-          <label for="email">Email</label>
-        </div>
-      </div>
-    <div class="row">
-        <div class="input-field col s12">
-          <input id="phone" type="tel" class="validate" name="phone">
-          <label for="phone">Phone Number</label>
-            <span class="helper-text">Optional, so we can contact you if you lost password</span>
-        </div>
-      </div>
-
+  </div>
     <div class="row">
           <div class="input-field col s12">
             <button class="btn waves-effect waves-light col s12 light-blue" type="submit">
-                Create Account
+                Create Upload
             </button>
           </div>
         </div>
-
     </form>
   </div>
+       </div>
+    <div id = "youtube">
+    <div id="login-page" class="row" style="width: 500px">
+    <form class="col s12" action="{% url "save_vid" "youtube" channel.name %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+        <div class="row center-align">
+            <h5>Youtube</h5>
+        </div>
+    <div class="row">
+        <div class="input-field col s12">
+          <input id="name" type="text" class="validate" name="name">
+          <label for="name">Name Your Video</label>
+        </div>
+      </div>
+        <div class="row">
+    <div class="input-field col s12">
+          <input id="name" type="text" class="link" name="link">
+          <label for="name">Link to Youtube video</label>
+        </div></div>
+  <div class="row">
+    <div class="input-field col s12">
+          <textarea id="description" class="materialize-textarea" name="description"></textarea>
+          <label for="description">Description</label>
+        </div>
+  </div>
+    <div class="row">
+          <div class="input-field col s12">
+            <button class="btn waves-effect waves-light col s12 light-blue" type="submit">
+                Create Youtube Embed
+            </button>
+          </div>
+        </div>
+    </form>
+  </div>
+       </div>
+
   </div></div>
+
 {% endblock %}

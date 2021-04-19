@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="container center-align" id="login-page">
+    <div class="row">
+        <h3>Create a new channel</h3>
+        <form class="col s12" action="{% url "channel_safe" %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% if name_exist %}
+            <div class="row">
+            <a class="red-text">Channel with such name already exist Try again</a>
+            </div>
+        {% endif %}
+        {% if empty_video %}
+            <div class="row">
+            <a class="red-text">Do not leave this field empty!</a>
+            </div>
+        {% endif %}
+    <div class="row">
+        <div class="input-field col s12">
+          <input id="username" type="text" class="validate" name="name">
+          <label for="username">Create Channel Name</label>
+        </div>
+      </div>
+    <div class="row">
+        <div class="file-field input-field col s12">
+      <div class="btn light-blue">
+        <span>Avatar</span>
+          {{ form.file }}
+      </div>
+      <div class="file-path-wrapper">
+        <input class="file-path no-select" type="text"  placeholder="Upload your Avatar">
+      </div>
+    </div>
+    </div>
+    <div class="row">
+        <div class="input-field col s12">
+            <textarea id="Description"  class="materialize-textarea" name="description"></textarea>
+          <label for="Description">Description</label>
+        </div>
+      </div>
+
+    <div class="row">
+          <div class="input-field col s12">
+            <button class="btn waves-effect waves-light col s12 light-blue" type="submit">
+                Create Channel
+            </button>
+          </div>
+        </div>
+        </form>
+    </div>
+    </div>
+{% endblock %}

@@ -7,3 +7,6 @@ requests~=2.25.1
 
 mux_python
 pip install git+https://github.com/muxinc/mux-python.git
+
+pafy
+(requires youtube-dl package installed on computer directly)

@@ -27,7 +27,7 @@
               </a></li>
           <li><a href="{% url 'main' %}" class="brand-logo left">MyPipe</a></li>
       </ul>
-          <form id = "search" action="" method="post">
+          <form id = "search" action="{% url "search" %}" method="post">
               {% csrf_token %}
               <div class="input-field">
                   <input id="search" type="search" name="search" placeholder="Type the search">
@@ -73,12 +73,11 @@
                       <li>
                           <a href="#!">
                               <img class="circle" height="100%" align="middle"
-                                   src="{% static '/user_data/avatar/'%}{{ channel.avatar }}">
+                                   src="{% static '/user_data/channel_avatar/'%}{{ channel.avatar }}">
                               <span> {{ channel.name }}</span>
                           </a>
                       </li>
                   {% endfor %}
-                <li><a href="#!">First</a></li>
               </ul>
             </div>
           </li>
@@ -90,7 +89,7 @@
                       <li>
                           <a href="#!{{ channel.name }}">
                               <img class="circle" height="100%" align="middle"
-                                   src="{% static '/user_data/avatar/'%}{{ channel.avatar }}">
+                                   src="{% static '/user_data/channel_avatar/'%}{{ channel.avatar }}">
                               <span> {{ channel.name }}</span>
                           </a>
                       </li>
@@ -109,6 +108,10 @@
 
 <!--JavaScript at end of body for optimized loading-->
 <script type="text/javascript" src="{% static "/materialize/js/materialize.js" %}"></script>
-<script type="text/javascript" src="{% static "materialize/js/project.js"%}"></script>
+<script type="text/javascript" src="{% static "/materialize/js/project.js" %}"></script>
+<script>
+    var el = document.getElementById('tabs')
+    var instance = M.Tabs.init(el)
+    </script>
 </body>
 </html>

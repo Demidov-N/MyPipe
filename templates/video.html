@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container">
+    <div class="row" style="padding-top: 30px">
+    <div class="col s9">
+    <div class = "row">
+        {% if video.type == "youtube" %}
+            <video controls="controls" class="video-stream"
+                   style="width: 100%"
+                   x-webkit-airplay="allow"
+                   data-youtube-id="{{ video.location }}"
+                   src="{{ url }}"></video>
+        {% else %}
+            <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+            <video id="stream" controls></video>
+            <script>
+            var video = document.getElementById('video');
+            var videoSrc = {{ video.location }};
+            //
+            // First check for native browser HLS support
+            //
+            if (video.canPlayType('application/vnd.apple.mpegurl')) {
+              video.src = videoSrc;
+              //
+              // If no native HLS support, check if hls.js is supported
+              //
+            } else if (Hls.isSupported()) {
+              var hls = new Hls();
+              hls.loadSource(videoSrc);
+              hls.attachMedia(video);
+            }
+            </script>
+        {% endif %}
+    </div>
+    <div class="row">
+        <div class="col s9 ">
+            <h4> {{ video.name }}</h4>
+            <span>Views: {{ video.views }} &nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <span>Uploaded: {{ video.date }}</span>
+        </div>
+        <div class="col s3">
+            <div class="col s6">
+            <div class="row">
+                <span class="green-text">Likes: </span> {{ video.likes }} <br>
+            </div>
+            <div class="row">
+                {% if liked %}
+                <form action="#" method="get">
+                    <button class="btn green lighten-2" type="submit">Like</button>
+                </form>
+                {%  else %}
+                    <a class="btn green darken-1">Liked</a>
+                {% endif %}
+            </div>
+            </div>
+            <div class="col s6">
+            <div class="row">
+                <span class="red-text">Dislikes: </span> {{ video.dislikes }} <br>
+            </div>
+            <div class="row">
+                {% if liked %}
+                <form action="#" method="get">
+                    <button class="btn red lighten-2" type="submit">Dislike</button>
+                </form>
+                {%  else %}
+                    <a class="btn greed darken">Disliked</a>
+                {% endif %}
+            </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="card-panel z-depth-1">
+        <div class="row">
+        <div class="col s1">
+            <a href="{% url "account" video.channel %}">
+                <img class="responsive-img circle" style="vertical-align: middle; width: 70px"
+             src="{% static "user_data/channel_avatar/" %}{{ video.avatar }}">
+            </a>
+        </div>
+        <div class="col s11">
+            <a href="{% url "channel" video.channel %}">
+            <h5>{{ video.channel }}</h5>
+            </a>
+        </div>
+        </div>
+        <div class="row">
+
+            <div class="col" style="padding-left: 10px">
+                <h6><b>Description:</b></h6>
+                <p style="padding-left: 10px">{{ video.description }}</p></div>
+        </div>
+    </div>
+    <div class="col s12" style="padding-left: 30px">
+    <div class="collection">
+        {% for comment in comments %}
+            <li class="collection-item avatar">
+            <img class="circle" src="{% static "user_data/avatar/" %}{{ comment.avatar }}">
+            <span class="title"><b>{{ comment.username }}</b></span>
+            <p>{{ comment.text }}</p>
+                <ul class="collection-item avatar" style="padding-left: 10px;">
+                    {% for reply in replies %}
+                        {% if reply.id_replied == comment.id %}
+                            <li class="collection-item avatar">
+                            <img class="circle" src="{% static "user_data/avatar/" %}{{ reply.avatar }}">
+                            <span class="title"><b>{{ reply.username }}</b></span>
+                            <p>{{ reply.text }}</p>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                <li>
+                    <form method="get" action="{% url "comment_save" account.username video.id comment.id %}">
+                        <textarea class="materialize-textarea" placeholder="Reply to Comment" id="comment" name="comment"></textarea>
+                        <button class="btn blue" type="submit">Reply</button>
+                    </form>
+                </li>
+                </ul>
+            </li>
+        {% endfor %}
+    </div>
+    <li>
+        <span>Leave a Comment</span>
+        <form method="get" action="{% url "comment_save" account.username video.id 0  %}">
+            <textarea class="materialize-textarea" placeholder="Leave Comment" id="comment" name="comment"></textarea>
+            <button class="btn blue" type="submit">Submit</button>
+        </form>
+    </li>
+    </div>
+    </div>
+    <div class="col s3" style="padding-left: 10px">
+        <h5 class="black-text">More {{ video.channel }}</h5>
+        {% for video in more %}
+                    <div class="col s12 left-align">
+                    <a href="{% url "video" video.id %}">
+                        <div class="card small">
+                        <div class="card-image">
+                            <img src="{{ video.thumbnail }}">
+                            <p>{{ video.thumbnail }}</p>
+                        </div>
+                        <div class="card-content">
+                            <span class="card-title black-text truncate">{{ video.name }}</span>
+                            <p class="black-text">Views: {{ video.views }}</p>
+                            <a href="{% url "channel" video.channel %}">{{ video.channel }}</a>
+                        </div>
+                        </div>
+                        </a>
+                    </div>
+            {% endfor %}
+    </div>
+    </div>
+    </div>
+{% endblock %}

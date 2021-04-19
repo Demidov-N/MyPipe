@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container center-align">
+    <h3 class="blue-text">Welcome to MyPipe</h3>
+    <div class="section">
+        <h5>Search For: {{ search }}</h5>
+        <div class="row center-align">
+        <div class="col s6">
+            <h4>Videos</h4>
+            {% for video in videos %}
+                    <div class="col s6 left-align">
+                    <a href="{% url "video" video.id %}">
+                        <div class="card small">
+                        <div class="card-image">
+                            <img src="{{ video.thumbnail }}">
+                            <p>{{ video.thumbnail }}</p>
+                        </div>
+                        <div class="card-content">
+                            <span class="card-title black-text truncate">{{ video.name }}</span>
+                            <p class="black-text">Views: {{ video.views }}</p>
+                            <a href="{% url "channel" video.channel %}">{{ video.channel }}</a>
+                        </div>
+                        </div>
+                        </a>
+                    </div>
+            {% endfor %}
+        </div>
+        <div class="col s6">
+            <h4>Videos</h4>
+            {% for video in streams %}
+                    <div class="col s6 left-align">
+                    <a href="{% url "video" video.id %}">
+                        <div class="card small">
+                        <div class="card-image">
+                            <img src="{{ video.thumbnail }}">
+                            <p>{{ video.thumbnail }}</p>
+                        </div>
+                        <div class="card-content">
+                            <span class="card-title black-text truncate">{{ video.name }}</span>
+                            <p class="black-text">Views: {{ video.views }}</p>
+                            <a href="{% url "channel" video.channel %}">{{ video.channel }}</a>
+                        </div>
+                        </div>
+                        </a>
+                    </div>
+            {% endfor %}
+        </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}
+{# https://mmcc-next-streamr.glitch.me/ #}

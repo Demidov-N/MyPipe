@@ -33,4 +33,7 @@ nav .right {
 .card.small .card-image {
   object-fit: cover; }
 
+.circle {
+  object-fit: inherit; }
+
 /*# sourceMappingURL=style.css.map */
