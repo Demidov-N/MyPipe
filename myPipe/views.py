@@ -32,7 +32,14 @@ def create_account(request):
 
 def account_safe(request):
     post = request.POST
-    avatar = Image.open(request.FILES['file'])
+    if request.FILES.get('file', False):
+        info = request.POST.dict()
+        avatar = Image.open(request.FILES['file'])
+        info["avatar"] = info["username"] + ".png"
+    else:
+        info = request.POST.dict()
+        avatar = Image.open("static/user_data/avatar/empty.png")
+        info["avatar"] = "empty.png"
     username = post['username']
     user_info = {
         'username': username,
@@ -54,6 +61,39 @@ def account_safe(request):
         })
     """Saves the account in the database, redirects on the main page"""
 
+def account_update(request):
+    return render(request, "change_page.html", context={
+        "form": UploadFileForm()
+    })
+
+def account_usafe(request, acc):
+    post = request.POST
+    if request.FILES.get('file', False):
+        info = request.POST.dict()
+        avatar = Image.open(request.FILES['file'])
+        info["avatar"] = info["username"] + ".png"
+    else:
+        avatar = Image.open("static/user_data/avatar/" + acc + ".png")
+    username = post['username']
+    user_info = {
+        'username': username,
+        'password': post['password'],
+        'email': post['email'],
+        'avatar': username + ".png",
+        'phone': post['phone']
+    }
+    f = Functions()
+    not_exist = f.update_account(user_info, acc)
+    if (not_exist):
+        request.session['account'] = Accounts(username)
+        avatar.save('static/user_data/avatar/' + username + '.png')
+        return redirect("account", username)
+    else:
+        return render(request, 'change_page.html', context= {
+            'form' : UploadFileForm(),
+            'acc_exist': not not_exist,
+        })
+    """Updates the account in the database, redirects on the main page"""
 
 
 
@@ -67,7 +107,7 @@ def main_page(request):
     for video in videos:
         video["thumbnail"] = vc.get_thumbnails(video)
     for stream in streams:
-        stream["thumbnail"] = vc.get_thumbnails(stream)
+        stream["thumbnail"] = vc.stream_thumbnails(stream)
     return render(request, 'main_page.html', context={
         "videos": videos,
         "streams": streams
@@ -101,8 +141,6 @@ def video_page(request, id):
         "comments": comments,
         "replies": replies,
         "url": url,
-        "liked": (id not in request.session.get("liked", [])),
-        "disliked": (id not in request.session.get("disliked", [])),
         "more": more,
     })
 
@@ -149,6 +187,11 @@ def create_channel(request):
     """Create channel page, form"""
     return render(request, "create_channel.html", context={'form': UploadFileForm})
 
+def delete_acc(request, acc):
+    ac = Accounts(acc)
+    ac.close_account()
+    request.session.flush()
+    return redirect("login")
 
 
 def channel_safe(request):
@@ -190,12 +233,11 @@ def channel_page(request, channel):
         for video in videos:
             video["thumbnail"] = vc.get_thumbnails(video)
     for stream in streams:
-        stream["thumbnail"] = vc.get_thumbnails(stream)
+        stream["thumbnail"] = vc.stream_thumbnails(stream)
     return render(request, "channel_page.html", context={
         "channel": info,
         "videos": videos,
         "streams": streams,
-        "streams": [],
         'channels': other,
         'same_acc': ch.channel_info()["name"] == request.session.get("account", ""),
         'if_subscribed': subscribed,
@@ -264,6 +306,25 @@ def content_update(request, id):
     })
     """Edit video form"""
 
+
+def stream_update(request, id):
+    vid = Content(id)
+    info = vid.stream_info()
+    ch = Channel(info["channel"])
+    c_info = ch.channel_info()
+    return render(request, "stream_edit.html", context={
+        "content": info,
+        "channel": c_info
+    })
+    """Edit video form"""
+
+def stream_update_safe(request, id):
+    vid = Content(id)
+    info = request.POST.dict()
+    vid.change_info(info)
+    return redirect("stream", id)
+    """Safe edits on the video"""
+
 def video_edit_safe(request, id):
     vid = Content(id)
     info = request.POST.dict()
@@ -295,14 +356,14 @@ def channel_delete(request, channel):
     return redirect("my_channels")
 
 def search(request):
-    searching = request.POST["search"] + "%"
+    searching = "%" + request.POST["search"] + "%"
     f = Functions()
     video = f.search_video(searching)
     for vid in video:
-        vid["thumbnail"] = vc.get_thumbnails(video)
+        vid["thumbnail"] = vc.get_thumbnails(vid)
     streams = f.search_stream(searching)
     for strem in streams:
-        strem["thumbnail"] = vc.get_thumbnails(video)
+        strem["thumbnail"] = vc.stream_thumbnails(strem)
 
     return render(request, "search_page.html", context={
         "search": search,
@@ -313,23 +374,49 @@ def search(request):
 def history(request):
     acc = request.session["account"]
     videos = acc.history()
+    streams = acc.stream_history()
     for vid in videos:
         vid["thumbnail"] = vc.get_thumbnails(vid)
+    for stream in streams:
+        stream["thumbnail"] = vc.stream_thumbnails(stream)
     return render(request, "history.html", context={
-        "videos": videos
+        "videos": videos,
+        "streams": streams
     })
 
-def start_stream(request, id):
-    v = Content(id)
-    v.stream_info()
-    v.toggle_stream()
-
-
 def stream(request, id):
-    pass
+    """A single video page, with comments, with an option to leave comments. FOR EVERY SESSION THERE IS ONE VIDEO WATCH"""
+    stream = Content(id)
+    key = None
+
+    if id not in request.session["videos"]:
+        request.session["videos"] += [id]
+        stream.view_video(request.session.get("account").user)
+    info = stream.stream_info()
+    if (info["type"] == "direct"):
+        url = "https://stream.mux.com/" + vc.playback_stream(info["location"]) + ".m3u8"
+        key = vc.stream_key(info["location"])
+    else:
+        url = vc.youtube_url(info["location"])
+    comments = stream.get_commments()
+    replies = stream.get_comment_replies()
+    ch = Channel(info["channel"])
+    more = ch.videos(4)
+    for m in more:
+        m["thumbnail"] = vc.get_thumbnails(m)
+    return render(request, "stream.html", context={
+        "stream": info,
+        "comments": comments,
+        "replies": replies,
+        "url": url,
+        "more": more,
+        "key": key
+    })
 
 def open_stream(request, id):
     strem = Content(id)
+    strem.toggle_stream()
+    return redirect("stream", id)
 
 
 

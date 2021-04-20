@@ -64,6 +64,10 @@ def playback_id(asset_id):
     """Creates a playback id for embedding it into the video"""
     return asset_api.get_asset(asset_id).data.playback_ids[0].id
 
+def playback_stream(id):
+    live = live_api.get_live_stream(id).data
+    return live.playback_ids[0].id
+
 
 def get_id(url):
     """Gets id of a video on youtube"""
@@ -88,6 +92,10 @@ def get_thumbnails(video):
     else:
         return 'https://image.mux.com/%s/thumbnail.png?width=1920&height=1080&fit_mode=pad' % (playback_id(video.get("location")))
 
-
+def stream_thumbnails(stream):
+    if stream.get("type") == "youtube":
+        return 'https://img.youtube.com/vi/%s/hqdefault.jpg' % (stream.get("location"))
+    else:
+        return 'https://image.mux.com/%s/thumbnail.png?width=1920&height=1080&fit_mode=pad' % (playback_stream(stream.get("location")))
 
 

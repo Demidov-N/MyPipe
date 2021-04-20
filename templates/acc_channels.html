@@ -21,7 +21,7 @@
                             <div class="row center-align" style="padding-top: 10px">
 
                             <div class="col s4">
-                                <a style="width: 80%" class="btn blue" href="#change_account{{ channel.name }}">Change Info</a>
+                                <a style="width: 80%" class="btn blue" href="{% url "stream_create" channel.name %}">Create Stream</a>
                             </div>
                             <div class="col s4">
                                 <a style="width: 80%" class="btn blue" href="{% url "create_video" channel.name %}">Upload Video</a>
@@ -47,7 +47,7 @@
 
                         </div>
                         <div class="card-content">
-                            <span class="card-title black-text">Create cew channel</span>
+                            <span class="card-title black-text">Create new channel</span>
                         </div>
                     </div>
                     </a>

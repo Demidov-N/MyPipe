@@ -7,32 +7,31 @@
     <div class="col s9">
     <div class = "row">
         {% if stream.running %}
-            <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-            <video id="stream" controls></video>
-            <script>
-            var video = document.getElementById('video');
-            var videoSrc = {{ url }};
-            //
-            // First check for native browser HLS support
-            //
-            if (video.canPlayType('application/vnd.apple.mpegurl')) {
-              video.src = videoSrc;
-              //
-              // If no native HLS support, check if hls.js is supported
-              //
-            } else if (Hls.isSupported()) {
-              var hls = new Hls();
-              hls.loadSource(videoSrc);
-              hls.attachMedia(video);
-            }
-            </script>
+            {% if stream.type == "youtube" %}
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ stream.location }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                {% else %}
+             <video id="video" style="width: 100%" name="video" controls preload="auto"></video>
+
+<script>
+  var video = document.getElementById('video');
+  var videoSrc = '{{ url }}';
+  if (Hls.isSupported()) {
+    var hls = new Hls();
+    hls.loadSource(videoSrc);
+    hls.attachMedia(video);
+  }
+  else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    video.src = videoSrc;
+  }
+</script>
+{% endif %}
     </div>
             {% if stream.type == "direct" %}
             <div class="row">
             <div class="card-panel z-depth-1">
                 <div class="card-content">
                     <span class="card-title">Set Up Stream</span>
-                    <p>The live stream link: <textarea class="materialize-textarea">rtmps://global-live.mux.com:443/app</textarea></p>
+                    <p>The live stream link: <textarea class="materialize-textarea">rtmp://global-live.mux.com:5222/app/<STREAM_KEY></textarea></p>
                     <p>Stream key: <textarea class="materialize-textarea">{{ key }}</textarea> </p>
             </div>
             </div>
@@ -47,28 +46,31 @@
         <div class="col s9 ">
             <h4> {{ stream.name }}</h4>
             <span>Max Viewers: {{ stream.views }} &nbsp;&nbsp;&nbsp;&nbsp;</span>
-            <span>Uploaded: {{ stream.upload_date }}</span>
+            <span>Uploaded: {{ stream.date_held }}</span>
         </div>
         <div class="col s3">
             {% if stream.owner == account.username %}
                 <div class="row">
-                <a class="btn blue" href="{% url "edit_content" stream.id %}" style="width: 80%">Edit Stream</a>
+                <a class="btn blue" href="{% url "edit_stream" stream.id %}" style="width: 80%">Edit Stream</a>
                 </div>
                 <div class="row">
+                {% if stream.running %}
+                    <a class="btn blue" href="{% url "start_stream" stream.id %}" style="width: 80%">End Stream</a>
+                    {% else %}
                 <a class="btn blue" href="{% url "start_stream" stream.id %}" style="width: 80%">Start Stream</a>
+                    {% endif %}
                 </div>
                 <div class="row">
-                <a class="btn red" href="{% url "delete_stream" stream.id %}" style="width: 80%">Delete Stream</a>
+                <a class="btn red" href="{% url "delete_stream" stream.id stream.channel %}" style="width: 80%">Delete Stream</a>
                 </div>
             {% endif %}
         </div>
-
     </div>
     <div class="card-panel z-depth-1">
     <div class="card-panel z-depth-1">
         <div class="row">
         <div class="col s1">
-            <a href="{% url "account" stream.channel %}">
+            <a href="{% url "channel" stream.channel %}">
                 <img class="responsive-img circle" style="vertical-align: middle; width: 70px"
              src="{% static "user_data/channel_avatar/" %}{{ stream.avatar }}">
             </a>
@@ -83,7 +85,7 @@
 
             <div class="col" style="padding-left: 10px">
                 <h6><b>Description:</b></h6>
-                <p style="padding-left: 10px">{{ video.description }}</p></div>
+                <p style="padding-left: 10px">{{ stream.description }}</p></div>
         </div>
     </div></div>
     <div class="col s12" style="padding-left: 30px">
@@ -104,7 +106,7 @@
                         {% endif %}
                     {% endfor %}
                 <li>
-                    <form method="get" action="{% url "comment_save" account.username video.id comment.id %}">
+                    <form method="get" action="{% url "comment_save" account.username stream.id comment.id %}">
                         <textarea class="materialize-textarea" placeholder="Reply to Comment" id="comment" name="comment"></textarea>
                         <button class="btn blue" type="submit">Reply</button>
                     </form>
@@ -115,7 +117,7 @@
     </div>
     <li>
         <span>Leave a Comment</span>
-        <form method="get" action="{% url "comment_save" account.username video.id 0  %}">
+        <form method="get" action="{% url "comment_save" account.username stream.id 0  %}">
             <textarea class="materialize-textarea" placeholder="Leave Comment" id="comment" name="comment"></textarea>
             <button class="btn blue" type="submit">Submit</button>
         </form>

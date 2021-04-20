@@ -4,8 +4,8 @@
 {% block content %}
     <div class="container">
     <div class="row black-text">
-        <div class="col s8">
-            <div class="row valign-wrapper blue lighten-2 z-depth-2 off">
+        <div class="col s8" >
+            <div class="row valign-wrapper blue lighten-2 z-depth-2 off" style="padding-top: 20px">
                 <div class = "col s2">
                     <img class="responsive-img circle" src="{% static "user_data/avatar/" %}{{ acc_now.avatar }}">
                 </div>
@@ -16,16 +16,14 @@
                     <div class="row no-pad-top">
                         <a class="text black-text">Email: {{ acc_now.email }}</a>
                     </div>
-                    <div class="row no-pad-top">
-                        <a class="text black-text">Total views: {{ views }}</a>
-                    </div>
-                    <div class="row">
-                        <a class="text black-text">Total subscribers from all channels: {{ views }}</a>
-                    </div>
+
                 </div>
                 <div class="col s2">
                     <div class="row">
-                        <a class="btn darken-4 blue">Subscribe</a>
+                        <a class="btn darken-4 blue" href="{% url "acccount_update" %}">Manage</a>
+                    </div>
+                     <div class="row">
+                        <a class="btn darken-4 red" href="{% url "delete_acc" account.username %}">DELETE</a>
                     </div>
                 </div>
             </div>
@@ -34,20 +32,24 @@
             <div class="row">
                 {% if channels%}
                     {% for channel in channels %}
+
                     <div class="col s4">
-                    <a href="{% url "channel" channel.name %}">
+                     <a href="{% url "channel" channel.name %}">
                         <div class="card small">
                         <div class="card-image">
                             <img src="{% static "user_data/channel_avatar/" %}{{ channel.avatar }}">
                         </div>
                         <div class="card-content">
-                            <span class="card-title"><a class="black-text">{{ channel.name }}</a></span>
+                            <span class="card-title black-text">{{ channel.name }}</span>
                             <p>Subscribers: {{ channel.subscribers }}</p>
                             <p>Videos: {{ channel.videos }}</p>
                         </div>
+
                         </div>
-                        </a>
+                         </a>
+
                     </div>
+
                     {% endfor %}
                 {% else %}
                     <a>There is no channels on this channel</a>
@@ -61,15 +63,17 @@
         </div>
             {% for channel in sub_channels %}
                 <div class="row">
+                <a href="{% url "channel" channel.name %}">
                     <div class = "col s2">
                         <img class="responsive-img circle"
-                             src="{% static "user_data/avatar/" %}{{ channel.avatar }}">
+                             src="{% static "user_data/channel_avatar/" %}{{ channel.avatar }}">
                     </div>
                     <div class = "col s10">
                         <div class="row no-pad" >
                             <a class="black-text">{{ channel.name }}</a>
                         </div>
                     </div>
+                    </a>
                 </div>
             {% endfor %}
         </div>

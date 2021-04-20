@@ -33,6 +33,24 @@ class Functions:
             conn.rollback()
             return False
 
+    def update_account(self, info, old_acc):
+        """Creates an account if possible. If not possible return false"""
+        try:
+            cur = conn.cursor()
+            cur.callproc("update_acct",
+                         [old_acc,
+                             info.get('username'),
+                          info.get('password'),
+                          info.get('email'),
+                          info.get('avatar'),
+                          info.get('phone')])
+            conn.commit()
+            cur.close()
+            return True
+
+        except sql.Error as e:
+            raise Http404(e.args)
+
     def create_channel(self, info: dict):
         """Creates a channel with the given login name. If not possible return false"""
         try:
@@ -63,7 +81,7 @@ class Functions:
             raise Http404(e.args)
 
     def search_video(self, search):
-        """Deletes channel with ALL ITS VIDEOS"""
+        """Searches the videos"""
         try:
             cur = conn.cursor()
             cur.callproc("search_video", (search,))
@@ -75,7 +93,7 @@ class Functions:
             # return False
 
     def search_stream(self, search):
-        """Deletes channel with ALL ITS VIDEOS"""
+        """Searches the stream"""
         try:
             cur = conn.cursor()
             cur.callproc("search_stream", (search,))
@@ -166,6 +184,17 @@ class Accounts:
         except sql.Error as e:
             raise Http404(e.args)
 
+    def stream_history(self):
+        """Get the list of subscriptions"""
+        try:
+            cur = conn.cursor()
+            cur.callproc("get_stream_history", (self.user,))
+            rows = cur.fetchall()
+            cur.close()
+            return rows
+        except sql.Error as e:
+            raise Http404(e.args)
+
     def change_info(self, new_info: dict):
         pass
 
@@ -207,8 +236,16 @@ class Accounts:
             raise Http404(e.args)
 
     def close_account(self):
-        """Deletes account and all its channel
-        TODO: Deletion CASCADE of EVERYTHING"""
+        """Deletes account and all its channel """
+        try:
+            cur = conn.cursor()
+            stmt = "DELETE FROM users WHERE username = '%s';" % self.user
+            cur.execute(stmt)
+            conn.commit()
+            cur.close()
+        except sql.Error as e:
+            conn.rollback()
+            raise Http404(e.args)
 
 
 class Channel:
@@ -254,6 +291,7 @@ class Channel:
         except sql.Error as e:
             raise Http404(e.args)
 
+
     def change_info(self, new_info: dict):
         """ Changes the info of a channel"""
         pass
@@ -287,7 +325,20 @@ class Channel:
             raise Http404(e.args)
 
     def create_stream(self, info: dict):
-        pass
+        try:
+            cur = conn.cursor()
+            cur.callproc("insert_stream",
+                         (info["name"],
+                          info["description"],
+                          info["channel"],
+                          info["location"],
+                          datetime.datetime.now(),
+                          info["type"]))
+            conn.commit()
+            cur.close()
+        except sql.Error as e:
+            conn.rollback()
+            raise Http404(e.args)
 
 
 class Content:

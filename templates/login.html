@@ -4,7 +4,7 @@
 <html lang="en" style="display: table; margin: auto; height: 100%;">
 <head>
     <meta charset="UTF-8">
-    <title>RedBear Store</title>
+    <title>MyPipe</title>
 
     <!--Import Google Icon Font-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -29,14 +29,14 @@
         <div class="row">
           <div class="input-field col s12">
             <i class="material-icons prefix">mail_outline</i>
-            <input class="validate" id="login" name="login" type="text">
-            <label for="login" data-error="wrong" data-success="right">Username</label>
+            <input class="validate" id="login" name="login" type="text" required="" aria-required="true">
+            <label for="login" data-error="wrong" data-success="right" >Username</label>
           </div>
         </div>
         <div class="row">
           <div class="input-field col s12">
             <i class="material-icons prefix">lock_outline</i>
-            <input id="password" type="password" name="password">
+            <input id="password" type="password" name="password" required="" aria-required="true">
             <label for="password">Password</label>
           </div>
         </div>

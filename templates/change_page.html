@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="container">
+    <h4 class="center-align">Change info</h4>
+    <div id="login-page" class="row" style="width: 500px">
+      <div class="row">
+    <form class="col s12" action="{% url "account_usafe" account.username %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% if acc_exist %}
+            <div class="row">
+            <a class="red-text">Account with such name already exist. Try another one</a>
+            </div>
+        {% endif %}
+    <div class="row">
+        <div class="input-field col s12">
+          <input id="username" type="text" class="validate" name="username" required="" aria-required="true"
+                 value="{{ account.username }}">
+          <label for="username">Create Username</label>
+        </div>
+      </div>
+    <div class="row">
+        <div class="file-field input-field col s12">
+      <div class="btn light-blue">
+        <span>Avatar</span>
+          {{ form.file }}
+      </div>
+      <div class="file-path-wrapper">
+        <input class="file-path" type="text"  placeholder="Upload your New Avatar">
+      </div>
+    </div>
+    </div>
+      <div class="row">
+        <div class="input-field col s12">
+          <input id="password" type="password" value="{{ account.password }}"
+                 class="validate" name="password" required="" aria-required="true">
+          <label for="password">Password</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+          <input id="email" type="email" value="{{ account.email }}"
+                 class="validate" name="email" required="" aria-required="true">
+          <label for="email">Email</label>
+        </div>
+      </div>
+    <div class="row">
+        <div class="input-field col s12">
+          <input id="phone" type="tel" value="{{ account.phone }}" class="validate" name="phone">
+          <label for="phone">Phone Number</label>
+            <span class="helper-text">Optional, so we can contact you if you lost password</span>
+        </div>
+      </div>
+
+    <div class="row">
+          <div class="input-field col s12">
+            <button class="btn waves-effect waves-light col s12 light-blue" type="submit">
+                Create Account
+            </button>
+          </div>
+        </div>
+
+    </form>
+  </div>
+  </div>
+    </div>
+{% endblock %}

@@ -13,8 +13,10 @@
     <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link type="text/css" rel="stylesheet" href="{% static "materialize/scss/style.css"%}"/>
-
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <link href="https://unpkg.com/video.js/dist/video-js.css" rel="stylesheet">
+    <script src="https://unpkg.com/video.js/dist/video.js"></script>
+    <script src="https://unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js"></script>
 </head>
 <body>
 
@@ -47,7 +49,7 @@
 <!-- Dropdown Structure -->
   <ul id='dropdown1' class='dropdown-content'>
     <li><a href="{% url "my_channels" %}">My Channels</a></li>
-    <li><a href="#Settings">Settings</a></li>
+    <li><a href="{% url "history" %}">history</a></li>
     <li><a href="{% url 'login' %}">Logout</a></li>
   </ul>
 
@@ -56,11 +58,11 @@
     <li><div class="user-view">
       <div class="background blue darken-4">
       </div>
-        <a href="#user"><img class="circle" src="{% static '/user_data/avatar/'%}{{ account.avatar }}"></a>
-        <a href="#name"><span class="white-text name">redbear</span></a>
+        <a href="{% url "account" account.username %}"><img class="circle" src="{% static '/user_data/avatar/'%}{{ account.avatar }}"></a>
+        <a href="{% url "account" account.username %}"><span class="white-text name truncate">{{ account.username }}</span></a>
     </div></li>
       <li><a href="{% url "account" account.username %}">Account information</a> </li>
-      <li><a href="#upoad">Upload a video</a></li>
+      <li><a href="{% url "my_channels" %}">Upload a video</a></li>
       <li><a href="{% url "history" %}">History</a> </li>
         <li><a href="{% url 'login' %}" class="red-text">Logout</a> </li>
       <li class="no-padding">
@@ -87,7 +89,7 @@
               <ul>
                 {% for channel in subscribed %}
                       <li>
-                          <a href="#!{{ channel.name }}">
+                          <a href="{% url "channel" channel.name %}">
                               <img class="circle" height="100%" align="middle"
                                    src="{% static '/user_data/channel_avatar/'%}{{ channel.avatar }}">
                               <span> {{ channel.name }}</span>

@@ -42,9 +42,14 @@ urlpatterns = [
     path('history', views.history, name="history"),
     path('video_update/<int:id>', views.content_update, name='edit_content'),
     path('video_usafe/<int:id>', views.video_edit_safe, name='safe_edit'),
-    path('start_stream/<int:id>', views.start_stream, name='start_stream'),
+    path('start_stream/<int:id>', views.open_stream, name='start_stream'),
     path('delete_stream/<int:id>/<str:channel>', views.stream_delete, name='delete_stream'),
     path('stream/<int:id>', views.stream, name='stream'),
     path('create_stream/<str:channel>', views.create_stream, name="stream_create"),
-    path('stream_safe/<str:type>/<str:channel>', views.stream_safe, name="stream_safe")
+    path('edit_stream/<int:id>', views.stream_update, name="edit_stream"),
+    path('stream_usafe/<int:id>', views.stream_update_safe, name="stream_usafe"),
+    path('stream_safe/<str:type>/<str:channel>', views.stream_safe, name="stream_safe"),
+    path('account_update/', views.account_update, name="acccount_update"),
+    path('acocunt_usafe/<str:acc>', views.account_usafe, name="account_usafe"),
+    path('account_delete/<str:acc>', views.delete_acc, name="delete_acc")
 ]
