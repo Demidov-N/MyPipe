@@ -1,6 +1,6 @@
 from django.shortcuts import render, HttpResponseRedirect, Http404, redirect
 from django.template import RequestContext
-from myPipe.database import Accounts, Functions, Channel, Content
+from myPipe.models import Accounts, Functions, Channel, Content
 from myPipe.context_processors import *
 from myPipe.forms import UploadFileForm
 import myPipe.video_connector as vc
@@ -8,12 +8,14 @@ from PIL import Image
 # Create your views here.
 
 def login(request):
+    """The first login page"""
     request.session.flush()
     request.session['videos'] = []
     request.session['liked'] = []
     return render(request, 'login.html')
 
 def username_save(request):
+    """Saves a username for the following usage, if credentials are right, redirects to the main page"""
     post = request.POST
     account = Accounts(post['login'])
     if account.login(post['login'], post['password']):
@@ -21,7 +23,6 @@ def username_save(request):
         return HttpResponseRedirect('main')
     else:
         return render(request, 'login.html', {"failed": True})
-    """Saves a username for the following usage, redirects to the main page"""
 
 
 
@@ -31,6 +32,7 @@ def create_account(request):
     return render(request,  'register.html', {'form': form})
 
 def account_safe(request):
+    """Saves the account in the database, redirects on the main page"""
     post = request.POST
     if request.FILES.get('file', False):
         info = request.POST.dict()
@@ -59,14 +61,16 @@ def account_safe(request):
             'form' : UploadFileForm(),
             'acc_exist': not not_exist,
         })
-    """Saves the account in the database, redirects on the main page"""
+
 
 def account_update(request):
+    """Update form of the account"""
     return render(request, "change_page.html", context={
         "form": UploadFileForm()
     })
 
 def account_usafe(request, acc):
+    """Saves the update of the account"""
     post = request.POST
     if request.FILES.get('file', False):
         info = request.POST.dict()
@@ -114,9 +118,6 @@ def main_page(request):
     })
 
 
-def search_video(request):
-    """Once tried to search a video, outputs the first 20 values"""
-
 def video_page(request, id):
     """A single video page, with comments, with an option to leave comments. FOR EVERY SESSION THERE IS ONE VIDEO WATCH"""
     video = Content(id)
@@ -154,10 +155,12 @@ def comment_safe(request, video_id, username, id_replied):
     return redirect("video", video_id)
 
 def channel_views(request):
+    """Gets the page of the account"""
     return render(request, "acc_channels.html")
 
 
 def account_info(request, username):
+    """Info on the account"""
     account = Accounts(username)
     subscriptions = account.subscriptions()
     channels = account.channels()
@@ -170,10 +173,8 @@ def account_info(request, username):
                    "subscriptions": 1,
                    "sub_channels": subscriptions[:4],
                    "channels": channels})
-    """Info on the account"""
 
-def edit_account(request):
-    """Edit account page"""
+
 
 def edit_acc_safe(request):
     """Saves the changes of the account in the database.
@@ -188,6 +189,7 @@ def create_channel(request):
     return render(request, "create_channel.html", context={'form': UploadFileForm})
 
 def delete_acc(request, acc):
+    """Create channel page, form"""
     ac = Accounts(acc)
     ac.close_account()
     request.session.flush()
@@ -225,9 +227,10 @@ def channel_page(request, channel):
     ch = Channel(channel)
     info = ch.channel_info()
     ac = Accounts(info["owner"])
+    acc_now = request.session["account"]
     other = ac.channels()
     videos = ch.videos(6)
-    subscribed = ac.subscribed(channel)
+    subscribed = acc_now.subscribed(channel)
     streams = ch.streams()
     if len(videos) != 0:
         for video in videos:
@@ -245,12 +248,14 @@ def channel_page(request, channel):
 
 
 def subscribe(request, channel):
+    """Subscribes to the channel"""
     ac = request.session["account"]
     ac.subscribe(channel)
     return redirect("channel", channel)
 
 
 def unsubscribe(request, channel):
+    """Unsubscribes to the channel"""
     ac = request.session["account"]
     ac.unsubscribe(channel)
     return redirect("channel", channel)
@@ -296,6 +301,7 @@ def video_safe(request, type, channel):
 
 
 def content_update(request, id):
+    """Updates the information of the video"""
     vid = Content(id)
     info = vid.get_info()
     ch = Channel(info["channel"])
@@ -308,6 +314,7 @@ def content_update(request, id):
 
 
 def stream_update(request, id):
+    """Updates the information of the stream"""
     vid = Content(id)
     info = vid.stream_info()
     ch = Channel(info["channel"])
@@ -316,24 +323,26 @@ def stream_update(request, id):
         "content": info,
         "channel": c_info
     })
-    """Edit video form"""
+
 
 def stream_update_safe(request, id):
+    """Saves the updates of the stream in the database"""
     vid = Content(id)
     info = request.POST.dict()
     vid.change_info(info)
     return redirect("stream", id)
-    """Safe edits on the video"""
+
 
 def video_edit_safe(request, id):
+    """Saves the updates of the video in the database"""
     vid = Content(id)
     info = request.POST.dict()
     vid.change_info(info)
     return redirect("video", id)
-    """Safe edits on the video"""
 
 
 def video_delete(request, id, channel):
+    """Deletes the video and all its contents"""
     vid = Content(id)
     info = vid.get_info()
     if info["type"] == "direct":
@@ -342,20 +351,23 @@ def video_delete(request, id, channel):
     return redirect("channel", channel)
 
 def stream_delete(request, id, channel):
+    """Deletes stream and all its contents"""
     vid = Content(id)
     info = vid.stream_info()
+    vid.delete_video()
     if info["type"] == "direct":
         vc.delete_stream(info["location"])
-    vid.delete_video()
     return redirect("channel", channel)
 
 
 def channel_delete(request, channel):
+    """Deletes the channel and all its contents"""
     ch = Channel(channel)
     ch.delete_channel()
     return redirect("my_channels")
 
 def search(request):
+    """Searches the contents and gets all that has the text as in search"""
     searching = "%" + request.POST["search"] + "%"
     f = Functions()
     video = f.search_video(searching)
@@ -372,6 +384,7 @@ def search(request):
     })
 
 def history(request):
+    """Gets the history both videos and streams"""
     acc = request.session["account"]
     videos = acc.history()
     streams = acc.stream_history()
@@ -414,6 +427,7 @@ def stream(request, id):
     })
 
 def open_stream(request, id):
+    """Opens or closes the stream for the public use"""
     strem = Content(id)
     strem.toggle_stream()
     return redirect("stream", id)
@@ -421,7 +435,7 @@ def open_stream(request, id):
 
 
 def create_stream(request, channel):
-    """Page of video creation form"""
+    """Page of stream creation form"""
     channel = Channel(channel)
     data = {
         'channel': channel.channel_info(),

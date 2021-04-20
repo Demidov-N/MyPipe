@@ -1,4 +1,4 @@
-from myPipe.database import Accounts
+from myPipe.models import Accounts
 from myPipe.forms import UploadFileForm
 def account_data(request):
     ses_acc = request.session.get("account", Accounts("empty"))

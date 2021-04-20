@@ -1,4 +1,4 @@
-# coding: utf-8
+"""All the connecitons to the Youtube API and the mux api, for retrieving and uploading videos"""
 
 import mux_python
 import requests
@@ -36,7 +36,7 @@ def upload(file):
 
 
 def makeStream():
-    # ========== create-live-stream ==========
+    """Creates a live stream and returns the id of the stream"""
     new_asset_settings = mux_python.CreateAssetRequest(playback_policy=[mux_python.PlaybackPolicy.PUBLIC])
     create_live_stream_request = mux_python.CreateLiveStreamRequest(playback_policy=[mux_python.PlaybackPolicy.PUBLIC],
                                                                     new_asset_settings=new_asset_settings)
@@ -46,17 +46,21 @@ def makeStream():
     return data.id
 
 def stream_key(stream_id):
-
+    """Gets the stream_key of the live stream"""
     live_stream_response = live_api.get_live_stream(stream_id)
     return live_stream_response.data.stream_key
 
+
 def delete_stream(stream_id):
+    """Deletes the stream from the mux platform"""
     live_stream_response = live_api.get_live_stream(stream_id)
     while (live_stream_response.data.status != "idle"):
         live_stream_response = live_api.get_live_stream(stream_id)
     live_api.delete_live_stream(stream_id)
 
+
 def delete_asset(asset_id):
+    """Deletes the asset(video) from the mux platform"""
     live_stream_response = asset_api.delete_asset(asset_id)
 
 
@@ -64,7 +68,9 @@ def playback_id(asset_id):
     """Creates a playback id for embedding it into the video"""
     return asset_api.get_asset(asset_id).data.playback_ids[0].id
 
+
 def playback_stream(id):
+    """Creates a playback id for embedding it into the stream"""
     live = live_api.get_live_stream(id).data
     return live.playback_ids[0].id
 
@@ -75,9 +81,8 @@ def get_id(url):
     return vid.videoid
 
 
-
 def youtube_url(id):
-    """Gets a url for a video embeding"""
+    """Gets a url for a video embedding"""
     try:
         vid = pafy.new("https://www.youtube.com/watch?v=" + id)
         stream = vid.getbest()
@@ -87,12 +92,15 @@ def youtube_url(id):
 
 
 def get_thumbnails(video):
+    """Gets thumbnails of videos"""
     if video.get("type") == "youtube":
         return 'https://img.youtube.com/vi/%s/hqdefault.jpg' % (video.get("location"))
     else:
         return 'https://image.mux.com/%s/thumbnail.png?width=1920&height=1080&fit_mode=pad' % (playback_id(video.get("location")))
 
+
 def stream_thumbnails(stream):
+    """Gets thumbnails of the videos"""
     if stream.get("type") == "youtube":
         return 'https://img.youtube.com/vi/%s/hqdefault.jpg' % (stream.get("location"))
     else:
