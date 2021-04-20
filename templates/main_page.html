@@ -24,6 +24,28 @@
             {% endfor %}
         </div>
     </div>
+
+    <div class="section">
+        <h5>Most Viewed Streams</h5>
+        <div class="row">
+            {% for stream in streams %}
+                    <div class="col s4 left-align">
+                    <a href="{% url "stream" stream.id %}">
+                        <div class="card small">
+                        <div class="card-image">
+                            <img src="{{ stream.thumbnail }}">
+                        </div>
+                        <div class="card-content">
+                            <span class="card-title black-text truncate">{{ stream.name }}</span>
+                            <p class="black-text">Views: {{ stream.viewers }}</p>
+                            <a href="{% url "channel" stream.channel %}">{{ stream.channel }}</a>
+                        </div>
+                        </div>
+                        </a>
+                    </div>
+            {% endfor %}
+        </div>
+    </div>
     </div>
 {% endblock %}
 {# https://mmcc-next-streamr.glitch.me/ #}

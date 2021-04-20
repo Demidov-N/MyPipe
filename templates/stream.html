@@ -6,18 +6,12 @@
     <div class="row" style="padding-top: 30px">
     <div class="col s9">
     <div class = "row">
-        {% if video.type == "youtube" %}
-            <video controls="controls" class="video-stream"
-                   style="width: 100%"
-                   x-webkit-airplay="allow"
-                   data-youtube-id="{{ video.location }}"
-                   src="{{ url }}"></video>
-        {% else %}
+        {% if stream.running %}
             <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-            <video id="video" controls class="video-stream" style="width: 100%"></video>
+            <video id="stream" controls></video>
             <script>
             var video = document.getElementById('video');
-            var videoSrc = '{{ url }}';
+            var videoSrc = {{ url }};
             //
             // First check for native browser HLS support
             //
@@ -32,37 +26,56 @@
               hls.attachMedia(video);
             }
             </script>
-        {% endif %}
     </div>
+            {% if stream.type == "direct" %}
+            <div class="row">
+            <div class="card-panel z-depth-1">
+                <div class="card-content">
+                    <span class="card-title">Set Up Stream</span>
+                    <p>The live stream link: <textarea class="materialize-textarea">rtmps://global-live.mux.com:443/app</textarea></p>
+                    <p>Stream key: <textarea class="materialize-textarea">{{ key }}</textarea> </p>
+            </div>
+            </div>
+            </div>
+            {% endif  %}
+    {% else %}
+            <div class="row">
+            <h4 class="blue-text">Stream is not running. Open it to start</h4>
+            </div>
+    {% endif %}
     <div class="row">
         <div class="col s9 ">
-            <h4> {{ video.name }}</h4>
-            <span>Views: {{ video.views }} &nbsp;&nbsp;&nbsp;&nbsp;</span>
-            <span>Uploaded: {{ video.upload_date }}</span>
+            <h4> {{ stream.name }}</h4>
+            <span>Max Viewers: {{ stream.views }} &nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <span>Uploaded: {{ stream.upload_date }}</span>
         </div>
         <div class="col s3">
-            {% if video.owner == account.username %}
+            {% if stream.owner == account.username %}
                 <div class="row">
-                <a class="btn blue" href="{% url "edit_content" video.id %}" style="width: 80%">Edit Video</a>
+                <a class="btn blue" href="{% url "edit_content" stream.id %}" style="width: 80%">Edit Stream</a>
                 </div>
                 <div class="row">
-                <a class="btn blue" href="{% url "delete_video" video.id video.channel %}" style="width: 80%">Delete Video</a>
+                <a class="btn blue" href="{% url "start_stream" stream.id %}" style="width: 80%">Start Stream</a>
+                </div>
+                <div class="row">
+                <a class="btn red" href="{% url "delete_stream" stream.id %}" style="width: 80%">Delete Stream</a>
                 </div>
             {% endif %}
         </div>
 
     </div>
     <div class="card-panel z-depth-1">
+    <div class="card-panel z-depth-1">
         <div class="row">
         <div class="col s1">
-            <a href="{% url "account" video.channel %}">
+            <a href="{% url "account" stream.channel %}">
                 <img class="responsive-img circle" style="vertical-align: middle; width: 70px"
-             src="{% static "user_data/channel_avatar/" %}{{ video.avatar }}">
+             src="{% static "user_data/channel_avatar/" %}{{ stream.avatar }}">
             </a>
         </div>
         <div class="col s11">
-            <a href="{% url "channel" video.channel %}">
-            <h5>{{ video.channel }}</h5>
+            <a href="{% url "channel" stream.channel %}">
+            <h5>{{ stream.channel }}</h5>
             </a>
         </div>
         </div>
@@ -72,7 +85,7 @@
                 <h6><b>Description:</b></h6>
                 <p style="padding-left: 10px">{{ video.description }}</p></div>
         </div>
-    </div>
+    </div></div>
     <div class="col s12" style="padding-left: 30px">
     <div class="collection">
         {% for comment in comments %}

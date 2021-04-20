@@ -17,33 +17,22 @@
     </div>
         <div class="col s12">
         <ul class="tabs center-align" id="tabs">
-            <li class="tab col s6"><a href="#direct">Upload Directly</a></li>
-            <li class="tab col s6"><a href="#youtube">Upload with YouTube</a></li>
+            <li class="tab col s6"><a href="#direct">Create Direct</a></li>
+            <li class="tab col s6"><a href="#youtube">Create with YouTube</a></li>
             </ul></div>
         <div id="direct">
             <div class="row col s12 center-align">
             <h5>Direct</h5>
         </div>
     <div id="login-page" class="row" style="width: 500px">
-    <form class="col s12" action="{% url "save_vid" "direct" channel.name %}" method="post" enctype="multipart/form-data">
+    <form class="col s12" action="{% url "stream_safe" "direct" channel.name %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="row">
         <div class="input-field col s12">
-          <input id="name" type="text" class="validate" name="name">
-          <label for="name">Name Your Video</label>
+          <input id="name" type="text" class="validate" name="name" required="" aria-required="true">
+          <label for="name">Name Your Stream</label>
         </div>
       </div>
-    <div class="row">
-        <div class="file-field input-field col s12">
-      <div class="btn light-blue">
-        <span>Video Upload</span>
-          {{ form.video }}
-      </div>
-      <div class="file-path-wrapper">
-        <input class="file-path" type="text"  placeholder="Path of Your Video">
-      </div>
-    </div>
-    </div>
   <div class="row">
     <div class="input-field col s12">
           <textarea id="description" class="materialize-textarea" name="description"></textarea>
@@ -53,7 +42,7 @@
     <div class="row">
           <div class="input-field col s12">
             <button class="btn waves-effect waves-light col s12 light-blue" type="submit">
-                Create Upload
+                Create Stream
             </button>
           </div>
         </div>
@@ -62,14 +51,14 @@
        </div>
     <div id = "youtube">
     <div id="login-page" class="row" style="width: 500px">
-    <form class="col s12" action="{% url "save_vid" "youtube" channel.name %}" method="post" enctype="multipart/form-data">
+    <form class="col s12" action="{% url "stream_safe" "youtube" channel.name %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
         <div class="row center-align">
             <h5>Youtube</h5>
         </div>
     <div class="row">
         <div class="input-field col s12">
-          <input id="name" type="text" class="validate" name="name">
+          <input id="name" type="text" class="validate" name="name" required="" aria-required="true">
           <label for="name">Name Your Video</label>
         </div>
       </div>
@@ -81,7 +70,7 @@
             {% endif %}
     <div class="input-field col s12">
 
-          <input id="name" type="text" class="link" name="link">
+          <input id="name" type="text" class="link" name="link" required="" aria-required="true">
           <label for="name">Link to Youtube video</label>
         </div></div>
   <div class="row">

@@ -16,17 +16,17 @@
 
     </div>
     <div id="login-page" class="row" style="width: 500px">
-    <form class="col s12" action="{% url "save_vid" "direct" channel.name %}" method="post" enctype="multipart/form-data">
+    <form class="col s12" action="{% url "safe_edit" content.id %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="row">
         <div class="input-field col s12">
-          <input id="name" type="text" class="validate" name="name" value="{{ channel.name }}">
+          <input id="name" type="text" class="validate" name="name" value="{{ content.name }}">
           <label for="name">Name Your Video</label>
         </div>
       </div>
   <div class="row">
     <div class="input-field col s12">
-          <textarea id="description" class="materialize-textarea" name="description">{{ channel.description }}</textarea>
+          <textarea id="description" class="materialize-textarea" name="description">{{ content.description }}</textarea>
           <label for="description">Description</label>
         </div>
   </div>

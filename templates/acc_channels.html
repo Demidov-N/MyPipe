@@ -20,10 +20,13 @@
                             <p class="black-text">Videos: {{ channel.videos }}</p>
                             <div class="row center-align" style="padding-top: 10px">
 
-                            <div class="col s6">
+                            <div class="col s4">
                                 <a style="width: 80%" class="btn blue" href="#change_account{{ channel.name }}">Change Info</a>
                             </div>
-                                <div class="col s6">
+                            <div class="col s4">
+                                <a style="width: 80%" class="btn blue" href="{% url "create_video" channel.name %}">Upload Video</a>
+                            </div>
+                                <div class="col s4">
                                 <a style="width: 80%" class="btn red white-text" href="{% url 'delete_channel' channel.name %}">DELETE</a>
                             </div>
                         </div>

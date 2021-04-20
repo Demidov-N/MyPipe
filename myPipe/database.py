@@ -8,10 +8,11 @@ import time
 import datetime
 
 try:
-    conn = sql.connect(host='localhost', user = "root", password = "Qw1568743!",
-    database='mypipe', charset="utf8mb4", cursorclass = sql.cursors.DictCursor)
+    conn = sql.connect(host='localhost', user="root", password="Qw1568743!",
+                       database='mypipe', charset="utf8mb4", cursorclass=sql.cursors.DictCursor)
 except sql.Error as e:
     print('Error: %d: %s' % (e.args[0], e.args[1]))
+
 
 class Functions:
     def create_account(self, info):
@@ -32,7 +33,6 @@ class Functions:
             conn.rollback()
             return False
 
-
     def create_channel(self, info: dict):
         """Creates a channel with the given login name. If not possible return false"""
         try:
@@ -51,8 +51,14 @@ class Functions:
             cur = conn.cursor()
             cur.callproc("most_viewed", ())
             return cur.fetchall()
+        except sql.Error as e:
+            raise Http404(e.args)
 
-
+    def get_streams(self):
+        try:
+            cur = conn.cursor()
+            cur.callproc("most_streams", ())
+            return cur.fetchall()
         except sql.Error as e:
             raise Http404(e.args)
 
@@ -79,6 +85,7 @@ class Functions:
         except sql.Error as e:
             raise Http404("FAILED SQL STATEMENT")
             # return False
+
 
 class Accounts:
     """TODO: Finish the whole class"""
@@ -148,6 +155,17 @@ class Accounts:
         except sql.Error as e:
             raise Http404("SQL STATEMENT FAILED")
 
+    def history(self):
+        """Get the list of subscriptions"""
+        try:
+            cur = conn.cursor()
+            cur.callproc("get_history", (self.user,))
+            rows = cur.fetchall()
+            cur.close()
+            return rows
+        except sql.Error as e:
+            raise Http404(e.args)
+
     def change_info(self, new_info: dict):
         pass
 
@@ -174,7 +192,6 @@ class Accounts:
             conn.rollback()
             raise Http404(e.args)
 
-
     def create_channel(self, channel_info: dict):
         """Creates a video on the channel"""
         try:
@@ -192,7 +209,6 @@ class Accounts:
     def close_account(self):
         """Deletes account and all its channel
         TODO: Deletion CASCADE of EVERYTHING"""
-
 
 
 class Channel:
@@ -214,9 +230,7 @@ class Channel:
         except sql.Error as e:
             raise Http404(e.args)
 
-
-
-    def videos(self, num = 10, descending = False) -> dict:
+    def videos(self, num=10, descending=False) -> dict:
         """
         Gets the dictionary of videos presented on this channel
             num - the amount of videos presented
@@ -234,7 +248,7 @@ class Channel:
     def streams(self):
         try:
             cur = conn.cursor()
-            cur.callproc("get_streams", (self.name))
+            cur.callproc("get_streams", (self.name,))
             rows = cur.fetchall()
             return rows
         except sql.Error as e:
@@ -275,7 +289,8 @@ class Channel:
     def create_stream(self, info: dict):
         pass
 
-class Video:
+
+class Content:
 
     def __init__(self, id: int):
         self.id = id
@@ -293,6 +308,18 @@ class Video:
         except sql.Error as e:
             raise Http404(e.args)
 
+    def stream_info(self) -> dict:
+        """Gets info of a stream, for the video page.
+        Dictionary should have all the video info PLUS the channel name, and avatar"""
+
+        try:
+            cur = conn.cursor()
+            cur.callproc("get_stream", (self.id,))
+            row = cur.fetchone()
+            cur.close()
+            return row
+        except sql.Error as e:
+            raise Http404(e.args)
 
     def view_video(self, account):
         try:
@@ -303,8 +330,30 @@ class Video:
         except sql.Error as e:
             raise Http404(e.args)
 
-    def change_info(self):
-        """Change the video info"""
+
+    def toggle_stream(self):
+        """Toggles the stream"""
+        try:
+            cur = conn.cursor()
+            cur.callproc("toggle_stream", (self.id,))
+            conn.commit()
+            cur.close()
+        except sql.Error as e:
+            conn.rollback()
+            raise Http404('FAILED SQL STATEMENT')
+
+
+    def change_info(self, new_info):
+        """Change the video info"""  # TODO: what can change: views, is_hidden
+        try:
+            cur = conn.cursor()
+            cur.callproc('update_content', (self.id, new_info['name'],
+                                          new_info['description']))
+            conn.commit()
+            cur.close()
+        except sql.Error as e:
+            conn.rollback()
+            raise Http404('FAILED SQL STATEMENT')
 
     def leave_comment(self, account, comment: str, under_comment: int):
         """Leaves a comment under the video, and under the comment if specified"""
@@ -317,7 +366,6 @@ class Video:
         except sql.Error as e:
             conn.rollback()
             raise Http404(e.args)
-
 
     def get_commments(self) -> dict:
         """Gets comments of the video
@@ -343,9 +391,12 @@ class Video:
 
     def delete_video(self):
         """Deletes a video and ALL ITS COMMENTS"""
-        pass
-
-
-
-
-
+        try:
+            cur = conn.cursor()
+            stmt = "DELETE FROM content WHERE id = %d ;" % self.id
+            cur.execute(stmt)
+            conn.commit()
+            cur.close()
+        except sql.Error as e:
+            conn.rollback()
+            raise Http404("FAILED SQL STATEMENT")

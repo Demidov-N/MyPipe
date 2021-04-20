@@ -1,6 +1,6 @@
 from django.shortcuts import render, HttpResponseRedirect, Http404, redirect
 from django.template import RequestContext
-from myPipe.database import Accounts, Functions, Channel, Video
+from myPipe.database import Accounts, Functions, Channel, Content
 from myPipe.context_processors import *
 from myPipe.forms import UploadFileForm
 import myPipe.video_connector as vc
@@ -63,9 +63,15 @@ def main_page(request):
     """The main page of a project"""
     f = Functions()
     videos = f.get_videos()
+    streams = f.get_streams()
     for video in videos:
         video["thumbnail"] = vc.get_thumbnails(video)
-    return render(request, 'main_page.html', context={"videos": videos})
+    for stream in streams:
+        stream["thumbnail"] = vc.get_thumbnails(stream)
+    return render(request, 'main_page.html', context={
+        "videos": videos,
+        "streams": streams
+    })
 
 
 def search_video(request):
@@ -73,7 +79,7 @@ def search_video(request):
 
 def video_page(request, id):
     """A single video page, with comments, with an option to leave comments. FOR EVERY SESSION THERE IS ONE VIDEO WATCH"""
-    video = Video(id)
+    video = Content(id)
 
     if id not in request.session["videos"]:
         request.session["videos"] += [id]
@@ -82,7 +88,7 @@ def video_page(request, id):
     if info.get("type") == "youtube":
         url = vc.youtube_url(info["location"])
     else:
-        url = "https://stream.mux.com/" + vc.playback_id(info["location"] + ".m3u8")
+        url = "https://stream.mux.com/" + vc.playback_id(info["location"]) + ".m3u8"
     comments = video.get_commments()
     replies = video.get_comment_replies()
     ch = Channel(info["channel"])
@@ -105,7 +111,7 @@ def comment_safe(request, video_id, username, id_replied):
     text = request.GET["comment"]
     if id_replied == 0:
         id_replied = None
-    video = Video(video_id)
+    video = Content(video_id)
     video.leave_comment(username, text, id_replied)
     return redirect("video", video_id)
 
@@ -179,12 +185,16 @@ def channel_page(request, channel):
     other = ac.channels()
     videos = ch.videos(6)
     subscribed = ac.subscribed(channel)
+    streams = ch.streams()
     if len(videos) != 0:
         for video in videos:
             video["thumbnail"] = vc.get_thumbnails(video)
+    for stream in streams:
+        stream["thumbnail"] = vc.get_thumbnails(stream)
     return render(request, "channel_page.html", context={
         "channel": info,
         "videos": videos,
+        "streams": streams,
         "streams": [],
         'channels': other,
         'same_acc': ch.channel_info()["name"] == request.session.get("account", ""),
@@ -218,16 +228,17 @@ def video_safe(request, type, channel):
         post = request.POST
         files = request.FILES
         video_file = files.get('video')
+        a_id = vc.upload(video_file)
         vid = {
             "name": post["name"],
             "description": post["description"],
-            "location": vc.playback_id(id),
+            "location": a_id,
             "channel": channel,
-            'type': "direct"
+            'type': type
         }
         c = Channel(channel)
         c.create_video(vid)
-        return redirect("main")
+        return redirect("channel", channel)
     else:
         post = request.POST.dict()
         vid = {
@@ -239,21 +250,44 @@ def video_safe(request, type, channel):
         }
         c = Channel(channel)
         c.create_video(vid)
-        return redirect("main")
+        return redirect("channel", channel)
 
 
-def video_edit(request):
+def content_update(request, id):
+    vid = Content(id)
+    info = vid.get_info()
+    ch = Channel(info["channel"])
+    c_info = ch.channel_info()
+    return render(request, "video_edit.html", context={
+        "content": info,
+        "channel": c_info
+    })
     """Edit video form"""
 
-def video_edit_safe(request):
+def video_edit_safe(request, id):
+    vid = Content(id)
+    info = request.POST.dict()
+    vid.change_info(info)
+    return redirect("video", id)
     """Safe edits on the video"""
 
 
-def video_delete(request, video):
-    vid = Video(video)
-    ch = vid.get_info()["channel"]
+def video_delete(request, id, channel):
+    vid = Content(id)
+    info = vid.get_info()
+    if info["type"] == "direct":
+        vc.delete_asset(info["location"])
     vid.delete_video()
-    return redirect("channel", ch)
+    return redirect("channel", channel)
+
+def stream_delete(request, id, channel):
+    vid = Content(id)
+    info = vid.stream_info()
+    if info["type"] == "direct":
+        vc.delete_stream(info["location"])
+    vid.delete_video()
+    return redirect("channel", channel)
+
 
 def channel_delete(request, channel):
     ch = Channel(channel)
@@ -275,3 +309,63 @@ def search(request):
         "videos": video,
         "streams": streams
     })
+
+def history(request):
+    acc = request.session["account"]
+    videos = acc.history()
+    for vid in videos:
+        vid["thumbnail"] = vc.get_thumbnails(vid)
+    return render(request, "history.html", context={
+        "videos": videos
+    })
+
+def start_stream(request, id):
+    v = Content(id)
+    v.stream_info()
+    v.toggle_stream()
+
+
+def stream(request, id):
+    pass
+
+def open_stream(request, id):
+    strem = Content(id)
+
+
+
+def create_stream(request, channel):
+    """Page of video creation form"""
+    channel = Channel(channel)
+    data = {
+        'channel': channel.channel_info(),
+    }
+    return render(request, 'create_stream.html', context=data)
+
+
+def stream_safe(request, type, channel):
+    """Saves the video in the database, redirects to the success_page if everything right"""
+    if type == "direct":
+        post = request.POST
+        a_id = vc.makeStream()
+        strem = {
+            "name": post["name"],
+            "description": post["description"],
+            "location": a_id,
+            "channel": channel,
+            'type': "direct"
+        }
+        c = Channel(channel)
+        c.create_stream(strem)
+        return redirect("channel", channel)
+    else:
+        post = request.POST.dict()
+        strem = {
+            "name": post["name"],
+            "description": post["description"],
+            "location": vc.get_id(post['link']),
+            "channel": channel,
+            'type': type
+        }
+        c = Channel(channel)
+        c.create_stream(strem)
+        return redirect("channel", channel)

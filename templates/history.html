@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="container center-align">
+    <h5>History</h5>
+        <div class="row">
+            {% for video in videos %}
+                    <div class="col s4 left-align">
+                    <a href="{% url "video" video.id %}">
+                        <div class="card medium">
+                        <div class="card-image">
+                            <img src="{{ video.thumbnail }}">
+                            <p>{{ video.thumbnail }}</p>
+                        </div>
+                        <div class="card-content">
+                            <span class="card-title black-text truncate">{{ video.name }}</span>
+                            <p class="black-text">Views: {{ video.views }}</p>
+                            <p class="black-text">Date and time viewed: {{ video.date_watched }}</p>
+                            <a href="{% url "channel" video.channel %}">{{ video.channel }}</a>
+                        </div>
+                        </div>
+                        </a>
+                    </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
