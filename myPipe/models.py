@@ -4,7 +4,7 @@ import datetime
 
 """Connection setup"""
 try:
-    conn = sql.connect(host='localhost', user="root", password="Qw1568743!",
+    conn = sql.connect(host='localhost', user="root", password="Qwerty123!",
                        database='mypipe', charset="utf8mb4", cursorclass=sql.cursors.DictCursor)
 except sql.Error as e:
     print('Error: %d: %s' % (e.args[0], e.args[1]))
