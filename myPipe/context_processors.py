@@ -1,3 +1,6 @@
+"""Assets that should be PRELOADED into the website on every page"""
+
+
 from myPipe.models import Accounts
 from myPipe.forms import UploadFileForm
 def account_data(request):
