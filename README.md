@@ -2,14 +2,14 @@
 ## What is it
 MyPipe is an online video web hosting, wher the videos can be taken from the YouTube or via direct upload
 
-This project served as a mysql connection and Django framework testing
+This project served as a **MySQL** connection and **Django** framework testing
 
 ## Requirements
 
 Requirements are listed in the requirements.txt file
 In order to run them call:
 
-```python
+```shell
 pip install -r requirements.txt
 ```
 
@@ -17,7 +17,7 @@ pip install -r requirements.txt
 To Configure the project:
 
 1. Run the 'mysqldump.sql' file
-2. In models.py edit the login and password from the database
+2. In MyPipe/models.py edit the login and password from the database
    in variable conn
 ```python
 try:
