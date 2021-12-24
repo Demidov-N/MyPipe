@@ -2,7 +2,7 @@
 ## What is it
 MyPipe is an online video web hosting, wher the videos can be taken from the YouTube or via direct upload
 
-This project served as a **MySQL** connection and **Django** framework testing
+This project served as a **MySQL** connection and **Django** framework
 
 ## Requirements
 
