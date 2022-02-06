@@ -49,13 +49,11 @@ If you see `Error 404`, check that Django is version 3.1.7, this is a key requir
 ## Project Overview
 
 1. All the connections of for the database are be made in MyPipe/models.py. 
-2. Views, the rendering of pages, should is done in myPipe/views.py
+2. Views, the rendering of pages, should is done in myPipe/views.pyM
 3. Urls are in myPipeProject.urls.py
 4. HTML templates should be are in templates folder
 5. Static files(CSS, JavaScript) is in static folder
    Also photos of accounts, channels are also in the static folder
-6. HTML and CSS is based on Materialise stylesheet + js
-7. On video upload, there is an option to upload directly from computer
-it is working however takes some time to read the file, so is not 
-   preferable
+6. HTML and CSS is made using Materialise stylesheet + js (https://materializecss.com/)
+7. Video upload and streaming is made using Mux (https://mux.com/) to save space on disk and processing time
    
