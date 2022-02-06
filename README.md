@@ -29,7 +29,9 @@ This will connect to the database with user `root` and password `Qwerty`
 
 3. After the database is configured and python or virtual enviroment is set up run:
 
+```python
 python manage.py runserver
+```
 
 You will get something like that:
 ```python
